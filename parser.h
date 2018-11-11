@@ -69,6 +69,7 @@ enum grules {
     RL_TERM_INT,
     RL_TERM_ID,
     RL_TERM_FUNCALL,
+    RL_TERM_GROUP,
     RL_FUNCALL,
     RL_IDLIST_OPT_0,
     RL_IDLIST_OPT_1,
