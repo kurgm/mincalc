@@ -33,6 +33,8 @@ enum toktype {
     TOK_GGG,
 };
 
+#define NTOKTYPE (TOK_GGG + 1)
+
 typedef struct {
     enum toktype type;
     union {

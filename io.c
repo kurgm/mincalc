@@ -10,6 +10,8 @@
 
 #ifdef __FPGA_EXP__
 
+#include <uart_sendrecv.h>
+
 int mc_putchar(int c) {
     UART_SEND_CHAR(c);
     return c;

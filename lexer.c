@@ -47,6 +47,9 @@ int get_next_tok(token_t *tok, const char **str) {
             }
         }
         if (!ok) LEX_DIE("identifier too long");
+        for (; i < 4; i++) {
+            tok->idname[i] = '\0';
+        }
     } else {
         switch (c) {
             case ':':

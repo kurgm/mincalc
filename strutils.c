@@ -2,6 +2,8 @@
  * strutils.c
  */
 
+#include <stdint.h>
+
 #include "strutils.h"
 
 // =======================
@@ -58,6 +60,20 @@ int mc_strncmp(const char *s1, const char *s2, size_t n) {
         i++;
     }
     return (int)(s1_[i] - s2_[i]);
+}
+
+char *mc_strstr(const char *haystack, const char *needle) {
+    if (*needle == '\0') {
+        return (char *)(uintptr_t)haystack;
+    }
+    for (; *haystack != '\0'; haystack++) {
+        for (int i = 0; needle[i] == haystack[i];) {
+            if (needle[++i] == '\0') {
+                return (char *)(uintptr_t)haystack;
+            }
+        }
+    }
+    return NULL;
 }
 
 // ======================================
