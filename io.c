@@ -58,10 +58,15 @@ char *mc_gets(char *str) {
     return str;
 }
 
-int mc_puts(const char *s) {
-    while (s != '\0') {
+int mc_print(const char *s) {
+    while (*s != '\0') {
         mc_putchar(*(const unsigned char *)(s++));
     }
+    return 0;
+}
+
+int mc_puts(const char *s) {
+    mc_print(s);
     mc_putchar('\n');
     return 0;
 }

@@ -9,6 +9,7 @@ int mc_putchar(int c);
 int mc_getchar(void);
 
 char *mc_gets(char *str);
+int mc_print(const char *s);
 int mc_puts(const char *s);
 char *mc_getsn(char *str, int len);
 

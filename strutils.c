@@ -92,7 +92,7 @@ int mc_atoi(const char *str) {
     int n = 0;
     while (1) {
         c = *(const unsigned char *)(str++) - '0';
-        if (c > 0) {
+        if (c > 9) {
             break;
         }
         n = n * 10 + c;
