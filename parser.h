@@ -73,9 +73,31 @@ enum grules {
     RL_IDLIST_OPT_0,
     RL_IDLIST_OPT_1,
     RL_IDLIST,
+    RL_IDLIST_CONS,
     RL_ARGLIST_OPT_0,
     RL_ARGLIST_OPT_1,
     RL_ARGLIST,
+    RL_ARGLIST_CONS,
 };
+#define NRULES (RL_ARGLIST_CONS + 1)
+
+typedef struct _symb_t {
+    int type;
+    union {
+        token_t token;
+        struct {
+            struct _symb_t *arg1;
+            struct _symb_t *arg2;
+        };
+    };
+} symb_t;
+
+void init_slr_svar(void);
+void init_slr_expr(void);
+
+void clear_slr_mem(void);
+
+int slr_feed_token(token_t *tok);
+symb_t *slr_get_result(void);
 
 #endif /* MINCALC_PARSER_H */

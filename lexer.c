@@ -16,7 +16,7 @@
 int get_next_tok(token_t *tok, const char **str) {
     static char buf[11];
     char c = **str;
-    while (c == ' ') {
+    while (c == ' ' || c == '\n') {
         c = *(++*str);
     }
     if ('0' <= c && c <= '9') {

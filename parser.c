@@ -2,6 +2,7 @@
  * parser.c
  */
 
+#include "io.h"
 #include "strutils.h"
 
 #include "parser.h"
@@ -48,7 +49,8 @@ digit ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
 static const char slr_table[][NSYMBOL] = {
     {0},
 
-    {0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    {~RL_STMT_SETVAR, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+     0, 0, 0, 0, 0,
      //
      0, 0, 2, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 
@@ -95,8 +97,8 @@ static const char slr_table[][NSYMBOL] = {
      //
      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 11, 0, 0},
 
-    {0, 0, 0, 0, 0, ~RL_IDLIST, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-     0, 0, 0,
+    {0, 0, 0, 0, 0, ~RL_IDLIST_CONS, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+     0, 0, 0, 0, 0,
      //
      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 
@@ -180,12 +182,13 @@ static const char slr_table[][NSYMBOL] = {
      //
      0, 0, 0, 0, 24, 30, 33, 36, 41, 50, 57, 62, 69, 70, 18, 0, 0, 0, 26},
 
-    {0, 0, 0, 0, 0, ~RL_ARGLIST, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-     0, 0, 0,
+    {0, 0, 0, 0, 0, ~RL_ARGLIST_CONS, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+     0, 0, 0, 0, 0,
      //
      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 
-    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 28, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    {~RL_STMT_EXPR, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 28, 0, 0, 0, 0, 0, 0, 0,
+     0, 0, 0, 0,
      //
      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 
@@ -464,3 +467,113 @@ static const char slr_table[][NSYMBOL] = {
      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 
 };
+
+typedef struct {
+    enum nonterminal nt;
+    char ntokens;
+    char arg1pos;
+    char arg2pos;
+} ruledef_entry;
+
+static const ruledef_entry rules[NRULES] = {
+    {NT_STMT, 1, 0, -1},        {NT_STMT, 1, 0, -1},
+    {NT_SETVAR, 1, 0, -1},      {NT_SETVAR, 1, 0, -1},
+    {NT_ASSIGN, 3, 0, 2},       {NT_FUNDEF, 6, 0, 2},
+    {NT_EXPR_OR, 1, 0, -1},     {NT_EXPR_OR, 3, 0, 2},
+    {NT_EXPR_XOR, 1, 0, -1},    {NT_EXPR_XOR, 3, 0, 2},
+    {NT_EXPR_AND, 1, 0, -1},    {NT_EXPR_AND, 3, 0, 2},
+    {NT_EXPR_EQ, 1, 0, -1},     {NT_EXPR_EQ, 3, 0, 2},
+    {NT_EXPR_EQ, 3, 0, 2},      {NT_EXPR_CMP, 1, 0, -1},
+    {NT_EXPR_CMP, 3, 0, 2},     {NT_EXPR_CMP, 3, 0, 2},
+    {NT_EXPR_CMP, 3, 0, 2},     {NT_EXPR_CMP, 3, 0, 2},
+    {NT_EXPR_SHIFT, 1, 0, -1},  {NT_EXPR_SHIFT, 3, 0, 2},
+    {NT_EXPR_SHIFT, 3, 0, 2},   {NT_EXPR_SHIFT, 3, 0, 2},
+    {NT_EXPR_ADDSUB, 1, 0, -1}, {NT_EXPR_ADDSUB, 3, 0, 2},
+    {NT_EXPR_ADDSUB, 3, 0, 2},  {NT_EXPR_MULDIV, 1, 0, -1},
+    {NT_EXPR_MULDIV, 3, 0, 2},  {NT_EXPR_MULDIV, 3, 0, 2},
+    {NT_EXPR_MULDIV, 3, 0, 2},  {NT_EXPR_UNARY, 1, 0, -1},
+    {NT_EXPR_UNARY, 2, 1, -1},  {NT_EXPR_UNARY, 2, 1, -1},
+    {NT_EXPR_UNARY, 2, 1, -1},  {NT_TERM, 1, 0, -1},
+    {NT_TERM, 1, 0, -1},        {NT_TERM, 1, 0, -1},
+    {NT_FUNCALL, 4, 0, 2},      {NT_IDLIST_OPT, 0, -1, -1},
+    {NT_IDLIST_OPT, 1, 0, -1},  {NT_IDLIST, 1, 0, -1},
+    {NT_IDLIST, 3, 0, 2},       {NT_ARGLIST_OPT, 0, -1, -1},
+    {NT_ARGLIST_OPT, 1, 0, -1}, {NT_ARGLIST, 1, 0, -1},
+    {NT_ARGLIST, 3, 0, 2}};
+
+static int state_stack[1024];
+static symb_t ast_stack[1024];
+static int stack_len;
+
+void init_slr_svar() {
+    stack_len = 1;
+    state_stack[0] = 1;
+}
+
+void init_slr_expr() {
+    stack_len = 1;
+    state_stack[0] = 16;
+}
+
+static symb_t mem[2048];
+static symb_t *mem_p = mem;
+
+void clear_slr_mem() { mem_p = mem; }
+
+#define SLR_DIE(msg)                 \
+    do {                             \
+        mc_puts("PARSER ERR: " msg); \
+        return 1;                    \
+    } while (0)
+
+int slr_feed_token(token_t *tok) {
+    int next = (int)slr_table[state_stack[stack_len - 1]][tok->type];
+    if (next == 0) SLR_DIE("unexpected token");
+    while (next < 0) {
+        // reduce
+        ruledef_entry rule = rules[~next];
+        int ntokens = (int)rule.ntokens;
+        if (stack_len - 1 < ntokens) {
+            SLR_DIE("internal error");
+        }
+        symb_t newsymb;
+        newsymb.type = ~next;
+        int arg1pos = (int)rule.arg1pos;
+        int arg2pos = (int)rule.arg2pos;
+        if (arg1pos >= 0) {
+            newsymb.arg1 = mem_p;
+            *(mem_p++) = ast_stack[stack_len - ntokens + arg1pos];
+        }
+        if (arg2pos >= 0) {
+            newsymb.arg2 = mem_p;
+            *(mem_p++) = ast_stack[stack_len - ntokens + arg2pos];
+        }
+        stack_len -= ntokens;
+        ast_stack[stack_len] = newsymb;
+        state_stack[stack_len] = slr_table[state_stack[stack_len - 1]][rule.nt];
+        stack_len++;
+        next = (int)slr_table[state_stack[stack_len - 1]][tok->type];
+    }
+    // shift
+    ast_stack[stack_len].type = -1;
+    ast_stack[stack_len].token = *tok;
+    state_stack[stack_len] = next;
+    stack_len++;
+    return 0;
+}
+
+symb_t *slr_get_result() {
+    if (stack_len != 3) {
+        return NULL;
+    }
+    if (ast_stack[2].type != -1 || ast_stack[2].token.type != TOK_EOS) {
+        return NULL;
+    }
+    if (state_stack[0] == 1 && ast_stack[1].type == RL_STMT_SETVAR) {
+        return &ast_stack[1];
+    }
+    if (state_stack[0] == 16 && ast_stack[1].type == RL_STMT_EXPR) {
+        return &ast_stack[1];
+    }
+    return NULL;
+}
