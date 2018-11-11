@@ -89,6 +89,7 @@ typedef struct _symb_t {
         struct {
             struct _symb_t *arg1;
             struct _symb_t *arg2;
+            struct _symb_t *arg3;
         };
     };
 } symb_t;

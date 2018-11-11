@@ -495,33 +495,34 @@ typedef struct {
     char ntokens;
     char arg1pos;
     char arg2pos;
-} ruledef_entry;
+    char arg3pos;
+} ruledef_entry_t;
 
-static const ruledef_entry rules[NRULES] = {
-    {NT_STMT, 1, 0, -1},         {NT_STMT, 1, 0, -1},
-    {NT_SETVAR, 1, 0, -1},       {NT_SETVAR, 1, 0, -1},
-    {NT_ASSIGN, 3, 0, 2},        {NT_FUNDEF, 6, 0, 2},
-    {NT_EXPR_OR, 1, 0, -1},      {NT_EXPR_OR, 3, 0, 2},
-    {NT_EXPR_XOR, 1, 0, -1},     {NT_EXPR_XOR, 3, 0, 2},
-    {NT_EXPR_AND, 1, 0, -1},     {NT_EXPR_AND, 3, 0, 2},
-    {NT_EXPR_EQ, 1, 0, -1},      {NT_EXPR_EQ, 3, 0, 2},
-    {NT_EXPR_EQ, 3, 0, 2},       {NT_EXPR_CMP, 1, 0, -1},
-    {NT_EXPR_CMP, 3, 0, 2},      {NT_EXPR_CMP, 3, 0, 2},
-    {NT_EXPR_CMP, 3, 0, 2},      {NT_EXPR_CMP, 3, 0, 2},
-    {NT_EXPR_SHIFT, 1, 0, -1},   {NT_EXPR_SHIFT, 3, 0, 2},
-    {NT_EXPR_SHIFT, 3, 0, 2},    {NT_EXPR_SHIFT, 3, 0, 2},
-    {NT_EXPR_ADDSUB, 1, 0, -1},  {NT_EXPR_ADDSUB, 3, 0, 2},
-    {NT_EXPR_ADDSUB, 3, 0, 2},   {NT_EXPR_MULDIV, 1, 0, -1},
-    {NT_EXPR_MULDIV, 3, 0, 2},   {NT_EXPR_MULDIV, 3, 0, 2},
-    {NT_EXPR_MULDIV, 3, 0, 2},   {NT_EXPR_UNARY, 1, 0, -1},
-    {NT_EXPR_UNARY, 2, 1, -1},   {NT_EXPR_UNARY, 2, 1, -1},
-    {NT_EXPR_UNARY, 2, 1, -1},   {NT_TERM, 1, 0, -1},
-    {NT_TERM, 1, 0, -1},         {NT_TERM, 1, 0, -1},
-    {NT_TERM, 3, 1, -1},         {NT_FUNCALL, 4, 0, 2},
-    {NT_IDLIST_OPT, 0, -1, -1},  {NT_IDLIST_OPT, 1, 0, -1},
-    {NT_IDLIST, 1, 0, -1},       {NT_IDLIST, 3, 0, 2},
-    {NT_ARGLIST_OPT, 0, -1, -1}, {NT_ARGLIST_OPT, 1, 0, -1},
-    {NT_ARGLIST, 1, 0, -1},      {NT_ARGLIST, 3, 0, 2}};
+static const ruledef_entry_t rules[NRULES] = {
+    {NT_STMT, 1, 0, -1, -1},         {NT_STMT, 1, 0, -1, -1},
+    {NT_SETVAR, 1, 0, -1, -1},       {NT_SETVAR, 1, 0, -1, -1},
+    {NT_ASSIGN, 3, 0, 2, -1},        {NT_FUNDEF, 6, 0, 2, 5},
+    {NT_EXPR_OR, 1, 0, -1, -1},      {NT_EXPR_OR, 3, 0, 2, -1},
+    {NT_EXPR_XOR, 1, 0, -1, -1},     {NT_EXPR_XOR, 3, 0, 2, -1},
+    {NT_EXPR_AND, 1, 0, -1, -1},     {NT_EXPR_AND, 3, 0, 2, -1},
+    {NT_EXPR_EQ, 1, 0, -1, -1},      {NT_EXPR_EQ, 3, 0, 2, -1},
+    {NT_EXPR_EQ, 3, 0, 2, -1},       {NT_EXPR_CMP, 1, 0, -1, -1},
+    {NT_EXPR_CMP, 3, 0, 2, -1},      {NT_EXPR_CMP, 3, 0, 2, -1},
+    {NT_EXPR_CMP, 3, 0, 2, -1},      {NT_EXPR_CMP, 3, 0, 2, -1},
+    {NT_EXPR_SHIFT, 1, 0, -1, -1},   {NT_EXPR_SHIFT, 3, 0, 2, -1},
+    {NT_EXPR_SHIFT, 3, 0, 2, -1},    {NT_EXPR_SHIFT, 3, 0, 2, -1},
+    {NT_EXPR_ADDSUB, 1, 0, -1, -1},  {NT_EXPR_ADDSUB, 3, 0, 2, -1},
+    {NT_EXPR_ADDSUB, 3, 0, 2, -1},   {NT_EXPR_MULDIV, 1, 0, -1, -1},
+    {NT_EXPR_MULDIV, 3, 0, 2, -1},   {NT_EXPR_MULDIV, 3, 0, 2, -1},
+    {NT_EXPR_MULDIV, 3, 0, 2, -1},   {NT_EXPR_UNARY, 1, 0, -1, -1},
+    {NT_EXPR_UNARY, 2, 1, -1, -1},   {NT_EXPR_UNARY, 2, 1, -1, -1},
+    {NT_EXPR_UNARY, 2, 1, -1, -1},   {NT_TERM, 1, 0, -1, -1},
+    {NT_TERM, 1, 0, -1, -1},         {NT_TERM, 1, 0, -1, -1},
+    {NT_TERM, 3, 1, -1, -1},         {NT_FUNCALL, 4, 0, 2, 3},
+    {NT_IDLIST_OPT, 0, -1, -1, -1},  {NT_IDLIST_OPT, 1, 0, -1, -1},
+    {NT_IDLIST, 1, 0, -1, -1},       {NT_IDLIST, 3, 0, 2, -1},
+    {NT_ARGLIST_OPT, 0, -1, -1, -1}, {NT_ARGLIST_OPT, 1, 0, -1, -1},
+    {NT_ARGLIST, 1, 0, -1, -1},      {NT_ARGLIST, 3, 0, 2, -1}};
 
 static int state_stack[1024];
 static symb_t ast_stack[1024];
@@ -537,7 +538,8 @@ void init_slr_expr() {
     state_stack[0] = 16;
 }
 
-static symb_t mem[2048];
+#define PARSER_MEM_SIZE 2048
+static symb_t mem[PARSER_MEM_SIZE];
 static symb_t *mem_p = mem;
 
 void clear_slr_mem() { mem_p = mem; }
@@ -553,15 +555,19 @@ int slr_feed_token(token_t *tok) {
     if (next == 0) SLR_DIE("unexpected token");
     while (next < 0) {
         // reduce
-        ruledef_entry rule = rules[~next];
+        ruledef_entry_t rule = rules[~next];
         int ntokens = (int)rule.ntokens;
         if (stack_len - 1 < ntokens) {
             SLR_DIE("internal error");
+        }
+        if (mem_p - mem + 3 > PARSER_MEM_SIZE) {
+            SLR_DIE("ran out of memory");
         }
         symb_t newsymb;
         newsymb.type = ~next;
         int arg1pos = (int)rule.arg1pos;
         int arg2pos = (int)rule.arg2pos;
+        int arg3pos = (int)rule.arg3pos;
         if (arg1pos >= 0) {
             newsymb.arg1 = mem_p;
             *(mem_p++) = ast_stack[stack_len - ntokens + arg1pos];
@@ -569,6 +575,10 @@ int slr_feed_token(token_t *tok) {
         if (arg2pos >= 0) {
             newsymb.arg2 = mem_p;
             *(mem_p++) = ast_stack[stack_len - ntokens + arg2pos];
+        }
+        if (arg3pos >= 0) {
+            newsymb.arg3 = mem_p;
+            *(mem_p++) = ast_stack[stack_len - ntokens + arg3pos];
         }
         stack_len -= ntokens;
         ast_stack[stack_len] = newsymb;
