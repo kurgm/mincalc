@@ -31,7 +31,7 @@ int get_next_tok(token_t *tok, const char **str) {
             }
         }
         if (!ok) LEX_DIE("number literal too long");
-        buf[i] = '\0';
+        buf[++i] = '\0';
         tok->type = TOK_NUM;
         tok->num = mc_atoi(buf);
     } else if ('a' <= c && c <= 'z') {
@@ -47,7 +47,7 @@ int get_next_tok(token_t *tok, const char **str) {
             }
         }
         if (!ok) LEX_DIE("identifier too long");
-        for (; i < 4; i++) {
+        while (++i < 4) {
             tok->idname[i] = '\0';
         }
     } else {

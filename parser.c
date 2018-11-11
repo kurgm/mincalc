@@ -49,10 +49,9 @@ digit ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
 static const char slr_table[][NSYMBOL] = {
     {0},
 
-    {~RL_STMT_SETVAR, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-     0, 0, 0, 0, 0,
+    {0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
      //
-     0, 0, 2, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+     0, 80, 2, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 
     {~RL_SETVAR_ASSIGN, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
      0, 0, 0, 0, 0,
@@ -481,6 +480,11 @@ static const char slr_table[][NSYMBOL] = {
      ~RL_TERM_GROUP, ~RL_TERM_GROUP, ~RL_TERM_GROUP, 0, ~RL_TERM_GROUP,
      ~RL_TERM_GROUP, ~RL_TERM_GROUP, ~RL_TERM_GROUP, ~RL_TERM_GROUP,
      ~RL_TERM_GROUP, ~RL_TERM_GROUP, ~RL_TERM_GROUP, ~RL_TERM_GROUP,
+     //
+     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+
+    {~RL_STMT_SETVAR, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+     0, 0, 0, 0, 0,
      //
      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 
