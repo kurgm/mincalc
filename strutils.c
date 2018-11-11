@@ -4,6 +4,8 @@
 
 #include <stdint.h>
 
+#include "io.h"
+
 #include "strutils.h"
 
 // =======================
@@ -123,4 +125,10 @@ char *mc_itoa(int num, char *s) {
         *(--p) = '-';
     }
     return mc_strcpy(s, p);
+}
+
+int print_int(int num) {
+    static char buf[12];
+    mc_itoa(num, buf);
+    return mc_print(buf);
 }

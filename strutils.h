@@ -16,5 +16,6 @@ char *mc_strstr(const char *haystack, const char *needle);
 
 int mc_atoi(const char *str);
 char *mc_itoa(int num, char *s);
+int print_int(int num);
 
 #endif /* MINCALC_STRUTILS_H */

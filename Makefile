@@ -5,6 +5,7 @@ SRCS := \
 	strutils.c \
 	lexer.c \
 	parser.c \
+	calc.c \
 	main.c
 
 OBJS := $(SRCS:.c=.o)
