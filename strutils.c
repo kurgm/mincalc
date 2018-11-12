@@ -12,13 +12,13 @@
 // common string functions
 // =======================
 
-void *mc_memcpy(void *restrict dst, const void *restrict src, size_t n) {
-    size_t i = 0;
-    for (; i != n; i++) {
-        ((char *restrict)dst)[i] = ((const char *restrict)src)[i];
-    }
-    return dst;
-}
+// void *mc_memcpy(void *restrict dst, const void *restrict src, size_t n) {
+//     size_t i = 0;
+//     for (; i != n; i++) {
+//         ((char *restrict)dst)[i] = ((const char *restrict)src)[i];
+//     }
+//     return dst;
+// }
 
 char *mc_strcpy(char *dst, const char *src) {
     size_t i = 0;
@@ -54,15 +54,15 @@ size_t mc_strlen(const char *s) {
     return r;
 }
 
-int mc_strncmp(const char *s1, const char *s2, size_t n) {
-    const unsigned char *s1_ = (const unsigned char *)s1,
-                        *s2_ = (const unsigned char *)s2;
-    size_t i = 0;
-    while (s1_[i] == s2_[i] && s1_[i] != '\0' && i < n) {
-        i++;
-    }
-    return (int)(s1_[i] - s2_[i]);
-}
+// int mc_strncmp(const char *s1, const char *s2, size_t n) {
+//     const unsigned char *s1_ = (const unsigned char *)s1,
+//                         *s2_ = (const unsigned char *)s2;
+//     size_t i = 0;
+//     while (s1_[i] == s2_[i] && s1_[i] != '\0' && i < n) {
+//         i++;
+//     }
+//     return (int)(s1_[i] - s2_[i]);
+// }
 
 char *mc_strstr(const char *haystack, const char *needle) {
     if (*needle == '\0') {

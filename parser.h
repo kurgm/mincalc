@@ -83,10 +83,10 @@ enum grules {
 #define NRULES (RL_ARGLIST_CONS + 1)
 
 typedef struct _symb_t {
-    int type;
     union {
         token_t token;
         struct {
+            int type;
             struct _symb_t *arg1;
             struct _symb_t *arg2;
             struct _symb_t *arg3;

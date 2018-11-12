@@ -46,7 +46,7 @@ digit ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
 
 */
 
-static const char slr_table[][NSYMBOL] = {
+static const signed char slr_table[][NSYMBOL] = {
     {0},
 
     {0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -524,8 +524,8 @@ static const ruledef_entry_t rules[NRULES] = {
     {NT_ARGLIST_OPT, 0, -1, -1, -1}, {NT_ARGLIST_OPT, 1, 0, -1, -1},
     {NT_ARGLIST, 1, 0, -1, -1},      {NT_ARGLIST, 3, 0, 2, -1}};
 
-static int state_stack[1024];
-static symb_t ast_stack[1024];
+static signed char state_stack[256];
+static symb_t ast_stack[256];
 static int stack_len;
 
 void init_slr_svar() {
@@ -538,7 +538,7 @@ void init_slr_expr() {
     state_stack[0] = 16;
 }
 
-#define PARSER_MEM_SIZE 2048
+#define PARSER_MEM_SIZE 1024
 static symb_t mem[PARSER_MEM_SIZE];
 static symb_t *mem_p = mem;
 
@@ -551,7 +551,7 @@ void clear_slr_mem() { mem_p = mem; }
     } while (0)
 
 int slr_feed_token(token_t *tok) {
-    int next = (int)slr_table[state_stack[stack_len - 1]][tok->type];
+    signed char next = slr_table[state_stack[stack_len - 1]][tok->type];
     if (next == 0) SLR_DIE("unexpected token");
     while (next < 0) {
         // reduce
@@ -564,7 +564,7 @@ int slr_feed_token(token_t *tok) {
             SLR_DIE("ran out of memory");
         }
         symb_t newsymb;
-        newsymb.type = ~next;
+        newsymb.type = next;
         int arg1pos = (int)rule.arg1pos;
         int arg2pos = (int)rule.arg2pos;
         int arg3pos = (int)rule.arg3pos;
@@ -584,10 +584,9 @@ int slr_feed_token(token_t *tok) {
         ast_stack[stack_len] = newsymb;
         state_stack[stack_len] = slr_table[state_stack[stack_len - 1]][rule.nt];
         stack_len++;
-        next = (int)slr_table[state_stack[stack_len - 1]][tok->type];
+        next = slr_table[state_stack[stack_len - 1]][tok->type];
     }
     // shift
-    ast_stack[stack_len].type = -1;
     ast_stack[stack_len].token = *tok;
     state_stack[stack_len] = next;
     stack_len++;
@@ -598,13 +597,13 @@ symb_t *slr_get_result() {
     if (stack_len != 3) {
         return NULL;
     }
-    if (ast_stack[2].type != -1 || ast_stack[2].token.type != TOK_EOS) {
+    if (ast_stack[2].token.type != TOK_EOS) {
         return NULL;
     }
-    if (state_stack[0] == 1 && ast_stack[1].type == RL_STMT_SETVAR) {
+    if (state_stack[0] == 1 && ast_stack[1].type == ~RL_STMT_SETVAR) {
         return &ast_stack[1];
     }
-    if (state_stack[0] == 16 && ast_stack[1].type == RL_STMT_EXPR) {
+    if (state_stack[0] == 16 && ast_stack[1].type == ~RL_STMT_EXPR) {
         return &ast_stack[1];
     }
     return NULL;
