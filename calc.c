@@ -107,7 +107,7 @@ int do_eval(int *result, const symb_t *symb) {
 int do_eval_ctx(int *result, const symb_t *symb, var_entry_t *ctx,
                 size_t ctx_size) {
     int arg1, arg2;
-    if (symb == NULL) CALC_DIE("hoge");
+    if (symb == NULL) CALC_DIE("internal error");
     switch (symb->type) {
         case TOK_NUM:
             *result = symb->token.num;
@@ -317,8 +317,10 @@ int call_function(int *result, const char *fundef_str, symb_t *arglist_opt,
     if (fundef->type != ~RL_STMT_SETVAR) CALC_DIE("function definition error");
     if (fundef->arg1->type != ~RL_SETVAR_FUNDEF)
         CALC_DIE("function definition error 2");
+    if (fundef->arg1->arg1->type != ~RL_FUNDEF)
+        CALC_DIE("function definition error 3");
 #endif
-    symb_t *idlist_opt = fundef->arg1->arg2;
+    symb_t *idlist_opt = fundef->arg1->arg1->arg2;
     size_t req_argc;
     if (idlist_opt->type == ~RL_IDLIST_OPT_0) {
         req_argc = 0;
@@ -361,5 +363,5 @@ int call_function(int *result, const char *fundef_str, symb_t *arglist_opt,
         if (do_eval_ctx(&scope[i].val, arg->arg1, ctx, ctx_size) != 0) return 1;
         scope[i].fundef = NULL;
     }
-    return do_eval_ctx(result, fundef->arg1->arg3, scope, argc);
+    return do_eval_ctx(result, fundef->arg1->arg1->arg3, scope, argc);
 }
